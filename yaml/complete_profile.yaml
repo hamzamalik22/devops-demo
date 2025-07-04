@@ -1,0 +1,79 @@
+# ========================
+# 🧑‍💻 Personal Information
+# ========================
+
+name: "Hamza Malik"       # String value (can be quoted or unquoted)
+age: 25                   # Integer
+employed: true            # Boolean
+nickname: null            # Null value (empty or use ~)
+
+# ========================
+# 📘 Skills as a List
+# ========================
+skills:
+  - Python
+  - Bash
+  - YAML
+  - Docker
+
+# ========================
+# 🗺️ Nested Structures
+# ========================
+address:
+  street: "123 DevOps Lane"
+  city: Lahore
+  zip: 54000
+
+# ========================
+# 📄 Multiline Strings
+# ========================
+
+bio: |
+  Hamza is a DevOps Engineer.
+  He loves automating things using Bash scripts.
+  YAML is his favorite configuration language.
+
+summary: >
+  Hamza also writes tutorials
+  and mentors beginners in DevOps.
+
+# ========================
+# ♻️ Reusing with Anchors & Aliases
+# ========================
+
+defaults: &default_settings
+  retries: 3
+  timeout: 30
+  logging: true
+
+dev_env:
+  <<: *default_settings
+  debug: true
+
+prod_env:
+  <<: *default_settings
+  debug: false
+  secure: true
+
+# ========================
+# 📂 Lists of Dictionaries
+# ========================
+
+projects:
+  - name: "Website Migration"
+    completed: true
+    tech: [Docker, NGINX, GitHub Actions]
+
+  - name: "CI/CD Pipeline"
+    completed: false
+    tech:
+      - Jenkins
+      - Bash
+      - YAML
+
+# ========================
+# 🔧 File Paths and Special Characters
+# ========================
+config_paths:
+  bin_path: "/usr/bin:/usr/local/bin"
+  "custom-file": "/home/hamza/.config/app.conf"

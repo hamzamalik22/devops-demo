@@ -1,0 +1,10 @@
+name: Hamza Malik
+age: 25
+skills:
+  - Python
+  - Bash
+  - YAML
+address:
+  city: Jhelum
+  zip: 49600
+employed: false
