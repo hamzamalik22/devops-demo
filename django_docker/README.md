@@ -1,13 +1,15 @@
-# Django Todo App with Docker
+# Django Todo App with Docker (Development Setup)
 
-A simple Django todo application containerized with Docker and PostgreSQL.
+A simple Django todo application containerized with Docker and PostgreSQL, configured for development.
 
 ## Features
 
 - Create and view todo items
 - PostgreSQL database
 - Docker containerization
-- Production-ready setup with Gunicorn
+- Development setup with Django's runserver
+- Hot reloading for code changes
+- Debug mode enabled
 
 ## Quick Start
 
@@ -33,38 +35,25 @@ A simple Django todo application containerized with Docker and PostgreSQL.
    - Todo app: http://localhost:8000
    - Admin interface: http://localhost:8000/admin
 
-### Development
+### Development Features
 
-For development with hot reloading:
+This setup is optimized for development:
 
-```bash
-# Run in development mode
-docker-compose -f docker-compose.yml up --build
-```
-
-### Production Deployment
-
-1. **Set environment variables**:
-   Create a `.env` file or set environment variables:
-   ```bash
-   SECRET_KEY=your-secure-secret-key
-   DEBUG=False
-   ```
-
-2. **Run in production mode**:
-   ```bash
-   docker-compose up -d
-   ```
+- **Hot Reloading**: Code changes are automatically reflected
+- **Debug Mode**: Django debug mode is enabled (`DEBUG=True`)
+- **Django's runserver**: Uses Django's development server instead of Gunicorn
+- **Volume Mounting**: Source code is mounted for live editing
+- **No Static Collection**: Static files are served directly by Django
 
 ## Project Structure
 
 ```
 django_docker/
-├── Dockerfile              # Docker image configuration
-├── docker-compose.yml      # Multi-container setup
+├── Dockerfile              # Docker image configuration (dev setup)
+├── docker-compose.yml      # Multi-container setup (dev configuration)
 ├── .dockerignore          # Files to exclude from Docker build
 ├── requirements.txt       # Python dependencies
-├── entrypoint.sh         # Container startup script
+├── entrypoint.sh         # Container startup script (dev optimized)
 ├── manage.py             # Django management script
 ├── myproject/            # Django project settings
 │   ├── settings.py
@@ -80,7 +69,7 @@ django_docker/
 
 ## Database
 
-The application uses PostgreSQL in production. The database configuration is in `myproject/settings.py`:
+The application uses PostgreSQL. The database configuration is in `myproject/settings.py`:
 
 - **Host**: `db` (Docker service name)
 - **Database**: `postgres`
@@ -93,7 +82,7 @@ The application uses PostgreSQL in production. The database configuration is in 
 ### Docker Commands
 
 ```bash
-# Build and start
+# Build and start (development mode)
 docker-compose up --build
 
 # Start in background
@@ -124,27 +113,34 @@ python manage.py migrate
 # Create superuser
 python manage.py createsuperuser
 
-# Collect static files
-python manage.py collectstatic
-
-# Run development server
+# Run development server (already running in container)
 python manage.py runserver
 ```
 
 ## Environment Variables
 
 - `SECRET_KEY`: Django secret key (required)
-- `DEBUG`: Debug mode (True/False)
+- `DEBUG`: Debug mode (True for development)
 - `POSTGRES_DB`: Database name
 - `POSTGRES_USER`: Database user
 - `POSTGRES_PASSWORD`: Database password
 
-## Security Notes
+## Development vs Production
 
-- Change the default `SECRET_KEY` in production
-- Update `ALLOWED_HOSTS` in `settings.py` for production
-- Use environment variables for sensitive data
-- Consider using Docker secrets for production deployments
+### Current Setup (Development)
+- Uses Django's `runserver` for development
+- Debug mode enabled (`DEBUG=True`)
+- Source code mounted as volume for hot reloading
+- No static file collection (served by Django)
+- Runs as root user for easier development
+
+### For Production
+To convert to production, you would need to:
+1. Use Gunicorn instead of `runserver`
+2. Set `DEBUG=False`
+3. Collect static files
+4. Run as non-root user
+5. Use proper environment variables for secrets
 
 ## Troubleshooting
 
@@ -164,16 +160,14 @@ If the web container can't connect to the database:
 
 3. Wait for the database to be ready (the entrypoint script handles this)
 
-### Static Files Not Loading
+### Permission Issues
 
-If static files aren't loading:
+If you encounter permission issues with `entrypoint.sh`:
 
-1. Ensure static files are collected:
-   ```bash
-   docker-compose exec web python manage.py collectstatic
-   ```
-
-2. Check if Whitenoise is properly configured in settings
+```bash
+chmod +x entrypoint.sh
+docker-compose build --no-cache
+```
 
 ### Port Already in Use
 
@@ -182,4 +176,12 @@ If port 8000 is already in use, change it in `docker-compose.yml`:
 ```yaml
 ports:
   - "8001:8000"  # Use port 8001 instead
+```
+
+### Database Table Errors
+
+If you see "relation does not exist" errors:
+
+```bash
+docker-compose exec web python manage.py migrate
 ``` 
