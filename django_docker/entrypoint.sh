@@ -14,9 +14,9 @@ echo "Database is ready!"
 echo "Running database migrations..."
 python manage.py migrate
 
-# Collect static files
-echo "Collecting static files..."
-python manage.py collectstatic --noinput --clear
+# Skip static file collection in development
+# echo "Collecting static files..."
+# python manage.py collectstatic --noinput --clear
 
 # Start the application
 echo "Starting the application..."

@@ -29,16 +29,6 @@ COPY . .
 # Make entrypoint script executable
 RUN chmod +x entrypoint.sh
 
-# Create a non-root user
-RUN adduser --disabled-password --gecos '' appuser
-
-# Create directories and set permissions
-RUN mkdir -p /app/staticfiles /app/media
-RUN chown -R appuser:appuser /app
-
-# Switch to non-root user
-USER appuser
-
 # Expose port
 EXPOSE 8000
 
@@ -46,4 +36,4 @@ EXPOSE 8000
 ENTRYPOINT ["./entrypoint.sh"]
 
 # Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myproject.wsgi:application"] 
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"] 

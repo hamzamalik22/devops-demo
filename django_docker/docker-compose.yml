@@ -5,13 +5,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - SECRET_KEY=your-secret-key-here-change-in-production
-      - DEBUG=False
+      - DEBUG=True
     depends_on:
       - db
     volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
+      - .:/app
     restart: unless-stopped
 
   db:
@@ -27,6 +25,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
-  static_volume:
-  media_volume: 
+  postgres_data: 
