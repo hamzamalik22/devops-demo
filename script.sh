@@ -1,4 +1,3 @@
 echo "====================="
 echo 'Hamza Malik'
-echo "🚀 Welcome to DevOps 🚀"
-echo "====================="
+echo "🚀 Welcome to DevOps Grind
