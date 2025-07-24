@@ -16,7 +16,12 @@ def todo_list(request):
             return redirect('todo_list')
     
     todos = Todo.objects.all().order_by('-id')
-    return render(request, 'todo/todo_list.html', {'todos': todos})
+    columns = [
+        {'key': 'todo', 'label': 'To Do', 'color': '#0052cc'},
+        {'key': 'inprogress', 'label': 'In Progress', 'color': '#ffab00'},
+        {'key': 'done', 'label': 'Done', 'color': '#36b37e'},
+    ]
+    return render(request, 'todo/todo_list.html', {'todos': todos, 'columns': columns})
 
 # AJAX view to toggle todo completion
 @csrf_exempt
@@ -96,3 +101,21 @@ def get_stats(request):
         'completed': completed,
         'pending': pending
     })
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def update_status(request, todo_id):
+    import json
+    try:
+        todo = get_object_or_404(Todo, id=todo_id)
+        data = json.loads(request.body)
+        new_status = data.get('status')
+        if new_status not in dict(Todo.STATUS_CHOICES):
+            return JsonResponse({'success': False, 'error': 'Invalid status'}, status=400)
+        todo.status = new_status
+        # Optionally update completed field for backward compatibility
+        todo.completed = (new_status == 'done')
+        todo.save()
+        return JsonResponse({'success': True, 'status': todo.status})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)

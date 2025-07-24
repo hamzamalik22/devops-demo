@@ -1,28 +1,30 @@
+# Docker Compose configuration for Django development
 
 services:
-  web:
-    build: .
+  web:  # Django web application service
+    build: .  # Build the Docker image from the current directory (Dockerfile)
     ports:
-      - "8000:8000"
+      - "8000:8000"  # Map host port 8000 to container port 8000
     environment:
-      - DEBUG=True
+      - SECRET_KEY=your-secret-key-here-change-in-production  # Django secret key
+      - DEBUG=True  # Enable Django debug mode for development
     depends_on:
-      - db
+      - db  # Wait for the db service to be ready before starting web
     volumes:
-      - .:/app
-    restart: unless-stopped
+      - .:/app  # Mount the current directory to /app in the container for live code reload
+    restart: unless-stopped  # Always restart unless explicitly stopped
 
-  db:
-    image: postgres:15
+  db:  # PostgreSQL database service
+    image: postgres:15  # Use the official PostgreSQL 15 image
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data  # Persist database data between container restarts
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres  # Name of the default database
+      - POSTGRES_USER=postgres  # Database user
+      - POSTGRES_PASSWORD=postgres  # Database password
     ports:
-      - "5432:5432"
-    restart: unless-stopped
+      - "5432:5432"  # Map host port 5432 to container port 5432
+    restart: unless-stopped  # Always restart unless explicitly stopped
 
 volumes:
-  postgres_data: 
+  postgres_data:  # Named volume for PostgreSQL data persistence 

@@ -4,8 +4,14 @@ from django.utils import timezone
 # Create your models here.
 
 class Todo(models.Model):
+    STATUS_CHOICES = [
+        ('todo', 'To Do'),
+        ('inprogress', 'In Progress'),
+        ('done', 'Done'),
+    ]
     title = models.CharField(max_length=200)
     completed = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='todo')
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 
@@ -22,7 +28,7 @@ class Todo(models.Model):
         super().save(*args, **kwargs)
 
     @property
-    def status(self):
+    def status_display(self):
         return "Completed" if self.completed else "Pending"
 
     @property

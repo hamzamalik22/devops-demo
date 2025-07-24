@@ -164,10 +164,10 @@ If the web container can't connect to the database:
 
 If you encounter permission issues with `entrypoint.sh`:
 
-```bash
+   ```bash
 chmod +x entrypoint.sh
 docker-compose build --no-cache
-```
+   ```
 
 ### Port Already in Use
 
